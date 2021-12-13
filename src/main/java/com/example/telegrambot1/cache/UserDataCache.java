@@ -4,6 +4,8 @@ import com.example.telegrambot1.botAPI.BotState;
 import com.example.telegrambot1.test.Test;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,6 +18,7 @@ public class UserDataCache implements DataCache{
     private Map<Long, Test> userTest = new HashMap<>();
     private Map<Long, String> userChatId = new HashMap<>();
     private Map<Long, String> userException = new HashMap<>();
+    private Map<Long, Integer> userMessageId = new HashMap<>();
 
 
     @Override
@@ -39,6 +42,11 @@ public class UserDataCache implements DataCache{
     }
 
     @Override
+    public void setUserMessageId(long userId, Integer messageId) {
+        userMessageId.put(userId, messageId);
+    }
+
+    @Override
     public BotState getUsersCurrentBotState(long userId) {
         return userBotState.get(userId);
     }
@@ -56,5 +64,10 @@ public class UserDataCache implements DataCache{
     @Override
     public String getUserException(long userId) {
         return userException.get(userId);
+    }
+
+    @Override
+    public Integer getUserMessageId(long userId) {
+        return userMessageId.get(userId);
     }
 }

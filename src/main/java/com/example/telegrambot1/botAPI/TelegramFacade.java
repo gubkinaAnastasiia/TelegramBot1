@@ -33,9 +33,9 @@ public class TelegramFacade {
     }
 
 
-    public List<BotApiMethod<?>> handleUpdate(Update update) {
+    public ResultAnswer handleUpdate(Update update) {
 
-        List<BotApiMethod<?>> resultMessage = new ArrayList<>();
+        ResultAnswer resultMessage = new ResultAnswer();
 
         //обработка входящего сообщения
         try {
@@ -50,18 +50,14 @@ public class TelegramFacade {
                 answerCallbackQuery.setCallbackQueryId(update.getCallbackQuery().getId());
                 answerCallbackQuery.setShowAlert(false);
                 answerCallbackQuery.setText("Нажмите на кнопку последнего сообщения");
-                resultMessage.add(answerCallbackQuery);
+                resultMessage.setAnswerCallbackQuery(answerCallbackQuery);
                 return resultMessage;
-            } /*else if (update.hasMessage()) {
-                SendMessage sendMessage = new SendMessage();
-                sendMessage.setChatId(String.valueOf(update.getMessage().getChatId()));
-                sendMessage.setText(e.getMessage());
-                resultMessage.add(sendMessage);
-            }*/
+            }
         }
 
-        if (update.hasCallbackQuery() || update.getMessage().getText().startsWith("/"))
-            resultMessage.add(createResponse.getAnswer(update));
+        if (update.hasCallbackQuery() || update.getMessage().getText().startsWith("/")) {
+            resultMessage.setSendMessage(createResponse.getAnswer(update));
+        }
         return resultMessage;
     }
 
@@ -79,11 +75,9 @@ public class TelegramFacade {
         switch (inputMessage) {
             case "/start":
                 dataCache.setUserCurrentBotState(userId, BotState.SHOW_MAIN_MENU);
+                dataCache.setUserMessageId(userId, null);
                 break;
         }
-
-        //отправка сообщения на обработку
-        //processingWord.dataAcceptance(update);
 
     }
 
