@@ -2,15 +2,10 @@ package com.example.telegrambot1.botAPI;
 
 import com.example.telegrambot1.botAPI.createResponce.CreateResponse;
 import com.example.telegrambot1.botAPI.exception.ExceptionProcessing;
-import com.example.telegrambot1.botAPI.processingResponce.Processing;
 import com.example.telegrambot1.botAPI.processingResponce.ProcessingButton;
 import com.example.telegrambot1.botAPI.processingResponce.ProcessingWord;
 import com.example.telegrambot1.cache.DataCache;
-import com.example.telegrambot1.cache.UserDataCache;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Lookup;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
@@ -57,16 +52,16 @@ public class TelegramFacade {
                 answerCallbackQuery.setText("Нажмите на кнопку последнего сообщения");
                 resultMessage.add(answerCallbackQuery);
                 return resultMessage;
-            } else if (update.hasMessage()) {
+            } /*else if (update.hasMessage()) {
                 SendMessage sendMessage = new SendMessage();
                 sendMessage.setChatId(String.valueOf(update.getMessage().getChatId()));
                 sendMessage.setText(e.getMessage());
                 resultMessage.add(sendMessage);
-            }
+            }*/
         }
 
-        //подготовка сообщения
-        resultMessage.add(createResponse.getAnswer(update));
+        if (update.hasCallbackQuery() || update.getMessage().getText().startsWith("/"))
+            resultMessage.add(createResponse.getAnswer(update));
         return resultMessage;
     }
 
@@ -88,7 +83,7 @@ public class TelegramFacade {
         }
 
         //отправка сообщения на обработку
-        processingWord.dataAcceptance(update);
+        //processingWord.dataAcceptance(update);
 
     }
 

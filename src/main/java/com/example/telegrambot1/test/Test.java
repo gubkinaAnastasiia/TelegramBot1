@@ -5,12 +5,14 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 public interface Test {
     boolean hasNextQuest();
     boolean checkAnswer(String answer);
+    boolean needPsychiatrist();
     void nextQuest();
 
     void setResult(String answer);
 
     String getStartMessage();
     String getQuest();
-    String getResult();
+    String getTextResult();
     InlineKeyboardMarkup getKeybord();
+
 }

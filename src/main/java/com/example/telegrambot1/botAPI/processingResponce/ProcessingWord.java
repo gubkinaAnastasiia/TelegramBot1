@@ -5,8 +5,6 @@ import com.example.telegrambot1.botAPI.exception.ExceptionProcessing;
 import com.example.telegrambot1.cache.DataCache;
 import com.example.telegrambot1.test.Test;
 import com.example.telegrambot1.test.TestBeck;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
@@ -30,26 +28,48 @@ public class ProcessingWord implements Processing{
 
 
         switch (botState) {
-            case TEST_SELECTION:
-                Test newTest = null;
-                switch (message) {
-                    case "1": newTest = new TestBeck(); break;
-                }
-                if (newTest != null) {
-                    dataCache.setUserTest(userId, newTest);
-                    dataCache.setUserCurrentBotState(userId, BotState.CONSENT_TEST);
+            case MAIN_SELECTION:
+                if (message.equals("1")) {
+                    dataCache.setUserCurrentBotState(userId, BotState.SHOW_ALL_TEST);
+                } else if (message.equals("2")) {
+                    dataCache.setUserCurrentBotState(userId, BotState.INFO);
                 } else {
-                    String exception = "Вы ввели некоректные данные в выборе теста. Повторите ввод.";
+                    String exception = "Вы ввели некоректные данные в главном меню. Повторите ввод.";
                     dataCache.setUserException(userId, exception);
                     dataCache.setUserCurrentBotState(userId, BotState.SHOW_MAIN_MENU);
                     throw new ExceptionProcessing(exception);
+                }
+                break;
+            case INFO:
+                dataCache.setUserCurrentBotState(userId, BotState.SHOW_MAIN_MENU);
+                break;
+            case TEST_SELECTION:
+                if (message.equals("2")) {
+                    dataCache.setUserCurrentBotState(userId, BotState.SHOW_MAIN_MENU);
+                    break;
+                } else {
+                    Test newTest = null;
+                    switch (message) {
+                        case "1":
+                            newTest = new TestBeck();
+                            break;
+                    }
+                    if (newTest != null) {
+                        dataCache.setUserTest(userId, newTest);
+                        dataCache.setUserCurrentBotState(userId, BotState.CONSENT_TEST);
+                    } else {
+                        String exception = "Вы ввели некоректные данные в выборе теста. Повторите ввод.";
+                        dataCache.setUserException(userId, exception);
+                        dataCache.setUserCurrentBotState(userId, BotState.SHOW_ALL_TEST);
+                        throw new ExceptionProcessing(exception);
+                    }
                 }
                 break;
             case CONSENT_TEST:
                 if (message.equals("да")) {
                     dataCache.setUserCurrentBotState(userId, BotState.TEST);
                 } else if (message.equals("нет")) {
-                    dataCache.setUserCurrentBotState(userId, BotState.SHOW_MAIN_MENU);
+                    dataCache.setUserCurrentBotState(userId, BotState.SHOW_ALL_TEST);
                 } else {
                     String exception = "Вы ввели некоректные данные в подтверждении прохождения теста. Повторите ввод.";
                     dataCache.setUserException(userId, exception);
@@ -72,7 +92,18 @@ public class ProcessingWord implements Processing{
                 }
                 break;
             case GETTING_RESULT:
-                dataCache.setUserCurrentBotState(userId, BotState.SHOW_MAIN_MENU);
+                dataCache.setUserCurrentBotState(userId, BotState.SHOW_ALL_TEST);
+                break;
+            case CHOOSING_PSYCHIATRIST:
+                if (message.equals("да")) {
+                    dataCache.setUserCurrentBotState(userId, BotState.INFO);
+                } else if (message.equals("нет")) {
+                    dataCache.setUserCurrentBotState(userId, BotState.SHOW_MAIN_MENU);
+                } else {
+                    String exception = "Вы ввели некоректные данные для согласия или отказа получения информации. Повторите ввод";
+                    dataCache.setUserException(userId, exception);
+                    throw new ExceptionProcessing(exception);
+                }
                 break;
         }
 

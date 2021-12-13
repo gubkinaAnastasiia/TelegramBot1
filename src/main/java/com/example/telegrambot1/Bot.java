@@ -4,8 +4,11 @@ import com.example.telegrambot1.botAPI.TelegramFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.telegram.telegrambots.bots.TelegramWebhookBot;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+
+import java.util.List;
 
 public class Bot extends TelegramWebhookBot {
 
@@ -36,8 +39,15 @@ public class Bot extends TelegramWebhookBot {
     @Override
     public BotApiMethod<?> onWebhookUpdateReceived(Update update) {
         try {
-            for (BotApiMethod<?> elem : telegramFacade.handleUpdate(update)) {
-                execute(elem);
+//            SendMessage sendMessage = new SendMessage();
+//            sendMessage.setText("Hi");
+//            sendMessage.setChatId("1625441396");
+//            execute(sendMessage);
+            List<BotApiMethod<?>> listMessage = telegramFacade.handleUpdate(update);
+            if (listMessage.size()!=0) {
+                for (BotApiMethod<?> elem : listMessage) {
+                    execute(elem);
+                }
             }
         } catch (TelegramApiException e) {
             e.printStackTrace();

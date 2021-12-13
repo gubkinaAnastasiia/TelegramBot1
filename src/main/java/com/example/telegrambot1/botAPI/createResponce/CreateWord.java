@@ -15,9 +15,21 @@ public class CreateWord implements Create<String>{
 
     @Override
     public String getShowMainMenu() {
-        return "Добрый день. \n" +
-                "Выберите какой тест хотите пройти или введите номер теста.\n" +
-                "1. Тест Бека.";
+        return "Добрый день. Выберете, что хотите сделать:\n" +
+                "1. Пройти тест.\n" +
+                "2. Получить информацию о психиатре.\n";
+    }
+
+    @Override
+    public String getInfo() {
+        return "Информация о психиатрах + ссылки";
+    }
+
+    @Override
+    public String getShowAllTest() {
+        return "Выберите какой тест хотите пройти или введите номер теста.\n" +
+                "1. Тест Бека.\n"+
+                "2. Назад";
     }
 
     @Override
@@ -26,12 +38,17 @@ public class CreateWord implements Create<String>{
     }
 
     @Override
-    public String getResult(long userId) {
-        return dataCache.getUserTest(userId).getResult();
+    public String getTextResult(long userId) {
+        return dataCache.getUserTest(userId).getTextResult();
     }
 
     @Override
     public String getConsentTest(long userId) {
         return dataCache.getUserTest(userId).getStartMessage();
+    }
+
+    @Override
+    public String needPsychiatrist() {
+        return "\nВам нужен психиатр, хотите получить более подробную информацию?";
     }
 }

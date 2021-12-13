@@ -1,9 +1,14 @@
 package com.example.telegrambot1.botAPI;
 
 public enum BotState {
+    SHOW_MAIN_MENU,
+    MAIN_SELECTION,
+    SHOW_ALL_TEST,
+    INFO,
     TEST,
     TEST_SELECTION,
     CONSENT_TEST,
-    SHOW_MAIN_MENU,
-    GETTING_RESULT;
+    GETTING_RESULT,
+    CHOOSING_PSYCHIATRIST;
+
 }
